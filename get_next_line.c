@@ -3,149 +3,122 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avacca <avacca@student.42.fr>              +#+  +:+       +#+        */
+/*   By: andi <andi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 13:33:50 by avacca            #+#    #+#             */
-/*   Updated: 2023/11/23 15:15:08 by avacca           ###   ########.fr       */
+/*   Updated: 2023/11/27 16:21:36 by andi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	str_len(const char *str)
+char	*leftoverchecker(char *leftover, int fd)
 {
-	int	i;
-
-	i = 0;
-	if (str == NULL)
-		return (i);
-	while (str[i] != '\0')
-		i++;
-	return (i);
+	if (leftover == NULL)
+		return (create_list(fd));
+	return (leftover);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+int	countletters(t_list *list)
 {
-	char	*new;
-	size_t	i;
-	int		a;
+	int	i;
+	int	a;
 
-	i = str_len(s1) + str_len(s2);
-	new = (char *)malloc(i + 1);
 	a = 0;
-	if (new == NULL)
-		return (NULL);
-	if (!s1)
-		s1 = s2;
-	while (i > 1)
+	while (list)
 	{
-		while (*s1 != '\0')
+		i = 0;
+		while (list->content[i])
 		{
-			new[a] = *s1;
-			s1++;
-			a++;
-			i--;
+			if (list->content[i] == '\n')
+			{
+				a = a + 2;
+				return (a);
+			}
+			a = a + i;
+			i++;
 		}
-		s1 = s2;
+		list = list->next;
 	}
-	new[a] = '\0';
-	return (new);
+	return(a);
 }
 
-int	check_n(char *temp)
+char	*lastfunction(t_list *list)
 {
-	int	i;
+	int		i;
+	int		k;
+	char	*str;
 
-	i = 0;
-	while (temp[i] != '\0')
+	if (NULL == list)
+		return (NULL);
+	str = malloc(countletters(list));
+	k = 0;
+	while (list)
 	{
-		if (temp[i] == '\n')
-			return (i);
-		i++;
+		i = 0;
+		while (list->content[i])
+		{
+			if (list->content[i] == '\n')
+			{
+				str[k++] = '\n';
+				str[k] = '\0';
+				return (str);
+			}
+			str[k++] = list->content[i++];
+		}
+		list = list->next;
 	}
-	return (i);
+	str[k] = '\0';
+	return (str);
 }
 
-char	*save(char *temp, char *buf, int a)
+void freelist(t_list **list)
 {
-	int	i;
-	int	b;
+	t_list	*tmp;
 
-	b = 0;
-	i = str_len(temp);
-    buf = malloc(a);
-	while (i - a < i)
-    {
-		buf[b] = temp[i - a]
-        b++;
-        a--;
-    }
-    return (buf);
-}
-
-char *cut(char *temp, int a, int n)
-{
-    while (a++ < n)
-        temp[a] = '\0';
-    return (temp);
-}
-
-char	*read_nl(char *temp, int fd)
-{
-	int			n;
-	int			i;
-	int			a;
-	static char	*buf = NULL;
-
-	i = 0;
-	a = 0;
-	temp = malloc(BUFFER_SIZE + 1);
-	if (!temp)
-		return (NULL);
-	n = read(fd, temp + i, BUFFER_SIZE - i);
-	if (n == -1)
-		return (NULL);
-	temp[n] = '\0';
-	a = check_n(temp);
-	if (a < n)
-    {
-		buf = save(temp, buf, (n - a));
-        while (a < n)
-            temp[a++] = '\0';
-    }
-    return (temp);
+	if (NULL == *list)
+		return ;
+	while (*list)
+	{
+		tmp = (*list)->next;
+		free((*list)->content);
+		free(*list);
+		*list = tmp;
+	}
 }
 
 char	*get_next_line(int fd)
 {
-	char	*temp;
-	char	*buf;
-	int		i;
+	t_list		*list;
+	t_list		*firstnode;
+	char		*string;
+	static char	*leftover = NULL;
 
-	buf = NULL;
-	i = 0;
-	while (1)
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	list = ft_lstnew(leftoverchecker(leftover, fd));
+	firstnode = list;
+	while (!find(list->content))
 	{
-		temp = read_nl(temp, fd);
-		if (*temp == '\0')
-			return (buf);
-		buf = ft_strjoin(buf, temp);
-		free(temp);
-		if (check_n(buf) < str_len(buf))
-			return (buf);
+		list->next = ft_lstnew(create_list(fd));
+		list = list->next;
 	}
-	return (NULL);
+	leftover = copyleft(list->content);
+	string = lastfunction(firstnode);
+	freelist(&firstnode);
+	return (string);
 }
-int	main(void)
-{
-	int fd;
-	fd = open("file.txt", O_RDONLY);
-	printf("i am one %s", get_next_line(fd));
-	printf("i am two %s", get_next_line(fd));
-	printf("i am three %s", get_next_line(fd));
-	printf("i am four %s", get_next_line(fd));
-	printf("i am five %s", get_next_line(fd));
-	printf("i am six %s", get_next_line(fd));
-	close(fd);
-	return (0);
-}
+
+// int	main(void)
+// {
+// 	int fd;
+// 	fd = open("file.txt", O_RDONLY);
+// 	printf("i am one %s", get_next_line(fd));
+// 	printf("i am two %s", get_next_line(fd));
+// 	printf("i am three %s", get_next_line(fd));
+// 	printf("i am four %s", get_next_line(fd));
+// 	printf("i am five %s", get_next_line(fd));
+// 	printf("i am six %s", get_next_line(fd));
+// 	close(fd);
+// 	return (0);
+// }
