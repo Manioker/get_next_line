@@ -6,7 +6,7 @@
 /*   By: andi <andi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 13:31:44 by avacca            #+#    #+#             */
-/*   Updated: 2023/11/28 12:22:24 by andi             ###   ########.fr       */
+/*   Updated: 2023/11/28 14:43:59 by andi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ typedef struct s_list
 t_list				*ft_lstnew(char *content);
 char				*create_list(int fd);
 int					find(char *buf);
-char	*get_next_line(int fd);
-char	*copychar(char *buf, int i, int a);
-char	*copyleft(char *buf);
+char				*get_next_line(int fd);
+char				*copychar(char *buf, int i, int a);
+char				*copyleft(char *buf);
 
 #endif

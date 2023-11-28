@@ -6,7 +6,7 @@
 /*   By: andi <andi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 13:33:50 by avacca            #+#    #+#             */
-/*   Updated: 2023/11/28 13:05:12 by andi             ###   ########.fr       */
+/*   Updated: 2023/11/28 14:47:22 by andi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,10 @@ int	countletters(t_list *list)
 			}
 			i++;
 			a = a + i;
-
 		}
 		list = list->next;
 	}
-	return(a);
+	return (a);
 }
 
 char	*lastfunction(t_list *list)
@@ -73,7 +72,7 @@ char	*lastfunction(t_list *list)
 	return (str);
 }
 
-void freelist(t_list **list)
+void	freelist(t_list **list)
 {
 	t_list	*tmp;
 
@@ -95,10 +94,11 @@ char	*get_next_line(int fd)
 	char		*string;
 	static char	*leftover = NULL;
 
+	string = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &string, 0) < 0)
 		return (NULL);
 	list = ft_lstnew(leftoverchecker(leftover, fd));
-	if (list->content[0] == '\0')
+	if (list->content[0] == '\0' || list->content == NULL)
 	{
 		freelist(&list);
 		return (NULL);
@@ -119,7 +119,10 @@ char	*get_next_line(int fd)
 // {
 // 	int fd;
 // 	fd = open("file.txt", O_RDONLY);
-// 	printf("i am one %s", get_next_line(fd));
+// 	char *pls;
+// 	pls = get_next_line(fd);
+// 	printf("i am one %s", pls);
+// 	free (pls);
 // 	// printf("i am two %s", get_next_line(fd));
 // 	// printf("i am three %s", get_next_line(fd));
 // 	// printf("i am four %s", get_next_line(fd));
