@@ -6,7 +6,7 @@
 /*   By: andi <andi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 14:14:31 by andi              #+#    #+#             */
-/*   Updated: 2023/11/27 16:21:40 by andi             ###   ########.fr       */
+/*   Updated: 2023/11/28 13:04:05 by andi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ char	*create_list(int fd)
 	buf = malloc(BUFFER_SIZE + 1);
 	n = read(fd, buf, BUFFER_SIZE);
 	if (n == -1)
+	{
+		free (buf);
 		return (NULL);
+	}
 	buf[n] = '\0';
 	return (buf);
 }
@@ -62,13 +65,18 @@ char	*copychar(char *buf, int i, int a)
 	int		b;
 
 	b = 0;
-	leftover = malloc((i - a) * sizeof(char));
-	while (a <= i)
+	if (i - a <= 0)
+		return (NULL);
+	leftover = malloc(((i - a) + 1) * sizeof(char));
+	if (!leftover)
+		return (NULL);
+	while (a < i)
 	{
 		leftover[b] = buf[a];
 		a++;
 		b++;
 	}
+	leftover[b] = '\0';
 	return (leftover);
 }
 

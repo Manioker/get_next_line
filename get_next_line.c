@@ -6,7 +6,7 @@
 /*   By: andi <andi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 13:33:50 by avacca            #+#    #+#             */
-/*   Updated: 2023/11/27 16:21:36 by andi             ###   ########.fr       */
+/*   Updated: 2023/11/28 13:05:12 by andi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,12 @@ int	countletters(t_list *list)
 		{
 			if (list->content[i] == '\n')
 			{
-				a = a + 2;
+				a = a + 1;
 				return (a);
 			}
-			a = a + i;
 			i++;
+			a = a + i;
+
 		}
 		list = list->next;
 	}
@@ -49,9 +50,9 @@ char	*lastfunction(t_list *list)
 	int		k;
 	char	*str;
 
-	if (NULL == list)
+	str = malloc((countletters(list) + 1) * sizeof(char));
+	if (list == NULL || !str)
 		return (NULL);
-	str = malloc(countletters(list));
 	k = 0;
 	while (list)
 	{
@@ -94,9 +95,14 @@ char	*get_next_line(int fd)
 	char		*string;
 	static char	*leftover = NULL;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &string, 0) < 0)
 		return (NULL);
 	list = ft_lstnew(leftoverchecker(leftover, fd));
+	if (list->content[0] == '\0')
+	{
+		freelist(&list);
+		return (NULL);
+	}
 	firstnode = list;
 	while (!find(list->content))
 	{
@@ -114,11 +120,11 @@ char	*get_next_line(int fd)
 // 	int fd;
 // 	fd = open("file.txt", O_RDONLY);
 // 	printf("i am one %s", get_next_line(fd));
-// 	printf("i am two %s", get_next_line(fd));
-// 	printf("i am three %s", get_next_line(fd));
-// 	printf("i am four %s", get_next_line(fd));
-// 	printf("i am five %s", get_next_line(fd));
-// 	printf("i am six %s", get_next_line(fd));
+// 	// printf("i am two %s", get_next_line(fd));
+// 	// printf("i am three %s", get_next_line(fd));
+// 	// printf("i am four %s", get_next_line(fd));
+// 	// printf("i am five %s", get_next_line(fd));
+// 	// printf("i am six %s", get_next_line(fd));
 // 	close(fd);
 // 	return (0);
 // }

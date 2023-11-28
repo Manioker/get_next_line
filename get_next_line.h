@@ -6,7 +6,7 @@
 /*   By: andi <andi@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 13:31:44 by avacca            #+#    #+#             */
-/*   Updated: 2023/11/27 16:22:28 by andi             ###   ########.fr       */
+/*   Updated: 2023/11/28 12:22:24 by andi             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
+#  define BUFFER_SIZE 1
 # endif
 
 # include <fcntl.h>
